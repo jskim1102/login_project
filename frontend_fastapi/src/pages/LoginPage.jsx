@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { loginUser } from '../services/api';
 import useAuthStore from '../store/authStore';
+import { api } from '../services/api';
+import { GoogleLogin } from '@react-oauth/google';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -22,6 +24,19 @@ export default function LoginPage() {
     } catch (err) {
       alert('올바른 회원정보를 입력하세요.');
       setError(err.response?.data?.detail || '로그인 실패');
+    }
+  };
+
+  const handleGoogleLoginSuccess = async (credentialResponse) => {
+    try {
+      // credentialResponse.credential이 구글에서 받은 id_token 입니다.
+      const response = await api.loginWithGoogle(credentialResponse.credential);
+      login(response.data.access_token); // 우리 백엔드가 발급한 JWT로 로그인 처리
+      alert('구글 계정으로 로그인 성공!');
+      navigate('/');
+    } catch (err) {
+       alert('구글 로그인에 실패했습니다.');
+       setError(err.response?.data?.detail || '구글 로그인 실패');
     }
   };
 
@@ -46,6 +61,15 @@ export default function LoginPage() {
                         Don’t have an account yet? <Link to="/signup" className="font-medium text-blue-600 hover:underline dark:text-blue-500">Sign up</Link>
                     </p>
                 </form>
+                <div className="flex justify-center">
+                    <GoogleLogin
+                        onSuccess={handleGoogleLoginSuccess}
+                        onError={() => {
+                            alert('구글 로그인에 실패했습니다.');
+                        }}
+                        useOneTap // 원탭 로그인 UI 사용
+                    />
+                </div>
             </div>
         </div>
     </div>

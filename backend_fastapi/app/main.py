@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.db.session import engine
 from app.db.base import Base # 모든 모델의 Base
 from app.models import user as user_model # 테이블 생성을 위해 모델 임포트
+from app.routers import user, auth
 
 async def create_db_and_tables():
     async with engine.begin() as conn:
@@ -27,7 +28,12 @@ app = FastAPI(title="CV SaaS", version="1.0", lifespan=lifespan)
 # ]
 
 # 개발 및 테스트를 위해 모든 출처를 허용
-origins = ["*"]
+origins = [
+    "http://deep-i.work:5174",
+    "http://localhost:5174",
+    "http://192.168.0.36:5174",
+    "http://211.106.144.18:5174"
+]
 
 app.add_middleware(
     CORSMiddleware,
@@ -38,6 +44,8 @@ app.add_middleware(
 )
 
 app.include_router(user.router, prefix="/api/v1", tags=["Users"]) # router/user.py에 만들어 두었던 엔드포인트 설정
+app.include_router(user.router, prefix="/api/v1", tags=["Users"])
+app.include_router(auth.router, prefix="/api/v1/auth", tags=["Auth"])
 
 @app.get("/")
 def read_root():

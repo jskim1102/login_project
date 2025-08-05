@@ -46,3 +46,27 @@ export const loginUser = (loginData) => {
     },
   });
 };
+
+export const api = {
+  signupUser: (userData) => {
+    return apiClient.post('/users/', userData);
+  },
+
+  loginUser: (loginData) => {
+    const formData = new FormData();
+    formData.append('username', loginData.email);
+    formData.append('password', loginData.password);
+    
+    return apiClient.post('/token', formData, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+  },
+
+  // 구글 로그인 (새로 추가)
+  loginWithGoogle: (googleToken) => {
+    // 백엔드로 구글 id_token을 전송합니다.
+    return apiClient.post('/auth/google', { token: googleToken });
+  }
+};

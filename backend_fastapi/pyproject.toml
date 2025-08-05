@@ -17,7 +17,9 @@ dependencies = [
     "passlib[bcrypt] (>=1.7.4,<2.0.0)",
     "python-jose (>=3.5.0,<4.0.0)",
     "alembic (>=1.16.4,<2.0.0)",
-    "python-multipart (>=0.0.20,<0.0.21)"
+    "python-multipart (>=0.0.20,<0.0.21)",
+    "google-auth (>=2.40.3,<3.0.0)",
+    "requests (>=2.32.4,<3.0.0)"
 ]
 
 
